@@ -31,4 +31,14 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-argument': 'warn'
     },
   },
+  {
+    files: ['**/*.spec.ts', '**/*.test.ts'],
+    // opcionalmente você pode reforçar o env jest aqui, mas já está globalizado acima
+    rules: {
+      // desabilita as regras de “unsafe” apenas nos seus testes
+      '@typescript-eslint/no-unsafe-call': 'off',
+      '@typescript-eslint/no-unsafe-member-access': 'off',
+      '@typescript-eslint/no-unsafe-assignment': 'off',
+    },
+  }
 );
