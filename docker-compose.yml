@@ -1,0 +1,31 @@
+services:
+  # rabbitmq:
+  #   container_name: rabbitmq
+  #   image: rabbitmq:3-management
+  #   ports:
+  #     - "5672:5672"
+  #     - "15672:15672"
+  #   networks:
+  #     - project-network
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nestdb
+    ports:
+      - "5432:5432"
+    networks:
+      - project-network
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
+
+networks:
+  project-network:
+    driver: bridge
