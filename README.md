@@ -5,6 +5,11 @@
 Este projeto tem como objetivo criar uma aplicação completa para o gerenciamento de produtos e pedidos, utilizando uma arquitetura moderna baseada em microsserviços e mensageria. O backend é desenvolvido com NestJS e TypeORM, utilizando PostgreSQL como banco de dados. O frontend será construído com Angular, permitindo o envio e acompanhamento de produtos e pedidos. A comunicação e o processamento assíncrono de pedidos e produtos serão realizados através do RabbitMQ, garantindo escalabilidade e desacoplamento entre os serviços. Todo o ambiente será orquestrado utilizando Docker Swarm, facilitando o deploy, a escalabilidade e a gestão dos containers.
 
 
+## Arquitetura
+
+<img width="1038" height="745" alt="image" src="https://github.com/user-attachments/assets/5b770b86-f63d-4d62-82be-fc59a229e4bf" />
+
+
 ## Tecnologias Utilizadas
 
 - **Frontend:** Angular
