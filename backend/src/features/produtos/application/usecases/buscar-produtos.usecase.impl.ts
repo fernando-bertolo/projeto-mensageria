@@ -2,15 +2,16 @@ import { Inject, Injectable } from '@nestjs/common';
 import { ProdutoGateway } from '../../core/gateways/produto.gateway';
 import { CadastrarProdutoUseCase } from './cadastrar-produto.usecase';
 import { Produto } from '../../core/entities/produto';
+import { BuscarProdutosUseCase } from './buscar-produtos.usecase';
 
 @Injectable()
-export class CadastrarProdutoUseCaseImpl implements CadastrarProdutoUseCase {
+export class BuscarProdutosUseCaseImpl implements BuscarProdutosUseCase {
     constructor(
         @Inject('ProdutoGateway')
         private readonly produtoGateway: ProdutoGateway
     ) {}
-
-    async create(produto: Produto): Promise<Produto> {
-        return await this.produtoGateway.create(produto);
+    
+    async buscarProduto(): Promise<Produto[]> {
+        return this.produtoGateway.findAll();
     }
 }

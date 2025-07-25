@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProdutoModule } from './features/produtos/infrastructure/modules/produto.module';
 
 @Module({
     imports: [
@@ -10,10 +11,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
             username: 'postgres',
             password: 'postgres',
             database: 'nestdb',
-            entities: [],
+            entities: [__dirname + '/**/*.entity.{ts,js}'],
             synchronize: true,
             migrations: [__dirname + '/migrations/*{.ts,.js}'],
         }),
+        ProdutoModule
     ],
     controllers: [],
     providers: [],

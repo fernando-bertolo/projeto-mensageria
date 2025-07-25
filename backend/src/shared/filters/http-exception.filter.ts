@@ -4,20 +4,36 @@ import {
     ArgumentsHost,
     HttpException,
 } from '@nestjs/common';
-import { Request, Response } from 'express';
+import { AppException } from '../exceptions/app.exception';
 
-@Catch(HttpException)
-export class HttpExceptionFilter implements ExceptionFilter {
-    catch(exception: HttpException, host: ArgumentsHost) {
-        const ctx = host.switchToHttp();
-        const response = ctx.getResponse<Response>();
-        const request = ctx.getRequest<Request>();
-        const status = exception.getStatus();
+@Catch()
+export class GlobalExceptionFilter implements ExceptionFilter {
+  catch(exception: unknown, host: ArgumentsHost) {
+    const ctx = host.switchToHttp();
+    const response = ctx.getResponse();
 
-        response.status(status).json({
-            statusCode: status,
-            timestamp: new Date().toISOString(),
-            path: request.url,
-        });
+    if (exception instanceof AppException) {
+      return response.status(exception.statusCode).json({
+        statusCode: exception.statusCode,
+        message: exception.message,
+        errorCode: exception.errorCode,
+      });
     }
+
+    if (exception instanceof HttpException) {
+      const status = exception.getStatus();
+      const res = exception.getResponse();
+
+      return response.status(status).json(
+        typeof res === 'string' ? { message: res } : res,
+      );
+    }
+
+    // fallback genérico
+    return response.status(500).json({
+      statusCode: 500,
+      message: 'Internal server error',
+    });
+  }
 }
+

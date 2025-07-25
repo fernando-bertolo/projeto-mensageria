@@ -1,5 +1,7 @@
-export class PrecoNaoPodeSerMenorQueZeroException extends Error {
-    constructor() {
-        super('Preço não pode ser menor que zero');
+import { AppException } from "@/shared/exceptions/app.exception";
+
+export class PrecoNaoPodeSerMenorQueZeroException extends AppException {
+    constructor(message: string) {
+        super(message, 400, 'PRECO_INVALIDO');
     }
 }
