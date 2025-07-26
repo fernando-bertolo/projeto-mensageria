@@ -1,59 +1,143 @@
-# Frontend
+# Estrutura da Aplicação Angular
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.1.1.
+## Visão Geral
 
-## Development server
+Esta aplicação Angular foi dividida em uma arquitetura modular seguindo as melhores práticas de desenvolvimento. A estrutura foi organizada para facilitar a manutenção, escalabilidade e reutilização de código.
 
-To start a local development server, run:
+## Estrutura de Pastas
 
-```bash
-ng serve
+```
+src/app/
+├── app.component.ts          # Componente principal da aplicação
+├── app.component.html        # Template principal (router-outlet)
+├── app.routes.ts            # Configuração das rotas principais
+├── features/                # Módulos de funcionalidades
+│   ├── dashboard/           # Módulo do Dashboard
+│   │   └── dashboard.component.ts
+│   ├── produtos/            # Módulo de Produtos
+│   │   ├── produtos.module.ts
+│   │   └── components/
+│   │       ├── produtos-list/
+│   │       ├── produto-form/
+│   │       └── produto-detail/
+│   └── pedidos/             # Módulo de Pedidos
+│       ├── pedidos.module.ts
+│       └── components/
+│           ├── pedidos-list/
+│           ├── pedido-form/
+│           └── pedido-detail/
+└── shared/                  # Componentes e serviços compartilhados (futuro)
 ```
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Arquitetura Modular
 
-## Code scaffolding
+### 1. **Dashboard (Standalone Component)**
+- **Localização**: `features/dashboard/`
+- **Tipo**: Componente standalone
+- **Função**: Página inicial com visão geral do sistema
+- **Características**: 
+  - Menu lateral de navegação
+  - Cards com estatísticas
+  - Tabelas resumidas
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+### 2. **Módulo de Produtos**
+- **Localização**: `features/produtos/`
+- **Tipo**: Módulo Angular tradicional
+- **Componentes**:
+  - `ProdutosListComponent`: Listagem de produtos
+  - `ProdutoFormComponent`: Formulário de criação/edição
+  - `ProdutoDetailComponent`: Visualização detalhada
+- **Rotas**:
+  - `/produtos` - Listagem
+  - `/produtos/novo` - Novo produto
+  - `/produtos/editar/:id` - Editar produto
+  - `/produtos/:id` - Detalhes do produto
 
-```bash
-ng generate component component-name
+### 3. **Módulo de Pedidos**
+- **Localização**: `features/pedidos/`
+- **Tipo**: Módulo Angular tradicional
+- **Componentes**:
+  - `PedidosListComponent`: Listagem de pedidos
+  - `PedidoFormComponent`: Formulário de criação/edição
+  - `PedidoDetailComponent`: Visualização detalhada
+- **Rotas**:
+  - `/pedidos` - Listagem
+  - `/pedidos/novo` - Novo pedido
+  - `/pedidos/editar/:id` - Editar pedido
+  - `/pedidos/:id` - Detalhes do pedido
+
+## Benefícios da Divisão Modular
+
+### 1. **Lazy Loading**
+- Cada módulo é carregado apenas quando necessário
+- Melhora o tempo de carregamento inicial
+- Reduz o tamanho do bundle principal
+
+### 2. **Separação de Responsabilidades**
+- Cada módulo gerencia apenas sua funcionalidade
+- Código mais organizado e fácil de manter
+- Facilita o trabalho em equipe
+
+### 3. **Reutilização**
+- Componentes podem ser reutilizados entre módulos
+- Serviços compartilhados podem ser criados
+- Padrões consistentes em toda aplicação
+
+### 4. **Escalabilidade**
+- Fácil adição de novos módulos
+- Estrutura preparada para crescimento
+- Manutenção simplificada
+
+## Rotas da Aplicação
+
+```typescript
+const routes: Routes = [
+  { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
+  { path: 'dashboard', loadComponent: () => import('./features/dashboard/dashboard.component') },
+  { path: 'produtos', loadChildren: () => import('./features/produtos/produtos.module') },
+  { path: 'pedidos', loadChildren: () => import('./features/pedidos/pedidos.module') },
+  { path: '**', redirectTo: '/dashboard' }
+];
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+## Próximos Passos
 
-```bash
-ng generate --help
-```
+### 1. **Criar Serviços**
+- `ProdutoService` para operações CRUD de produtos
+- `PedidoService` para operações CRUD de pedidos
+- `DashboardService` para estatísticas
 
-## Building
+### 2. **Implementar Interceptors**
+- `AuthInterceptor` para autenticação
+- `ErrorInterceptor` para tratamento de erros
+- `LoadingInterceptor` para indicadores de carregamento
 
-To build the project run:
+### 3. **Adicionar Guards**
+- `AuthGuard` para proteção de rotas
+- `RoleGuard` para controle de acesso por perfil
 
-```bash
-ng build
-```
+### 4. **Criar Componentes Compartilhados**
+- `LoadingComponent` para indicadores de carregamento
+- `ModalComponent` para diálogos
+- `TableComponent` para tabelas reutilizáveis
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### 5. **Implementar Pipes Customizados**
+- `StatusPipe` para formatação de status
+- `CurrencyPipe` para formatação de moeda
 
-## Running unit tests
+## Convenções de Nomenclatura
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+- **Componentes**: PascalCase (ex: `ProdutoFormComponent`)
+- **Módulos**: PascalCase + "Module" (ex: `ProdutosModule`)
+- **Serviços**: PascalCase + "Service" (ex: `ProdutoService`)
+- **Interfaces**: PascalCase (ex: `Produto`)
+- **Arquivos**: kebab-case (ex: `produto-form.component.ts`)
 
-```bash
-ng test
-```
+## Tecnologias Utilizadas
 
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+- **Angular 17+**: Framework principal
+- **TypeScript**: Linguagem de programação
+- **Tailwind CSS**: Framework de estilização
+- **Angular Router**: Sistema de roteamento
+- **Angular Forms**: Formulários reativos
+- **Angular Common**: Diretivas e pipes comuns 

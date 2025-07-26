@@ -1,0 +1,116 @@
+<div class="flex h-screen bg-gray-100">
+  <!-- Menu Lateral -->
+  <aside class="w-64 bg-white shadow-md flex flex-col">
+    <div class="h-20 flex items-center justify-center border-b">
+      <span class="text-2xl font-bold text-blue-600">Dashboard</span>
+    </div>
+    <nav class="flex-1 px-4 py-6">
+      <ul class="space-y-2">
+        <li>
+          <a routerLink="/dashboard" routerLinkActive="bg-blue-100 text-blue-700" class="flex items-center px-3 py-2 rounded-md text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition">
+            <svg class="w-5 h-5 mr-3 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+            </svg>
+            Dashboard
+          </a>
+        </li>
+        <li>
+          <a routerLink="/produtos" routerLinkActive="bg-blue-100 text-blue-700" class="flex items-center px-3 py-2 rounded-md text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition">
+            <svg class="w-5 h-5 mr-3 text-blue-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M3 7V6a2 2 0 012-2h2a2 2 0 012 2v1m10 0V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v1m-6 4h16M5 11v10a2 2 0 002 2h10a2 2 0 002-2V11"></path>
+            </svg>
+            Produtos
+          </a>
+        </li>
+        <li>
+          <a routerLink="/pedidos" routerLinkActive="bg-blue-100 text-blue-700" class="flex items-center px-3 py-2 rounded-md text-gray-700 hover:bg-blue-100 hover:text-blue-700 transition">
+            <svg class="w-5 h-5 mr-3 text-green-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M9 17v-2a4 4 0 014-4h4m0 0V7a4 4 0 00-4-4H7a4 4 0 00-4 4v10a4 4 0 004 4h4"></path>
+            </svg>
+            Pedidos
+          </a>
+        </li>
+      </ul>
+    </nav>
+  </aside>
+
+  <!-- Conteúdo Principal -->
+  <main class="flex-1 p-8 overflow-y-auto">
+    <h1 class="text-3xl font-bold mb-6 text-gray-800">Visão Geral</h1>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <!-- Card Produtos -->
+      <div class="bg-white rounded-lg shadow p-6 flex items-center">
+        <div class="bg-blue-100 rounded-full p-4 mr-4">
+          <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M3 7V6a2 2 0 012-2h2a2 2 0 012 2v1m10 0V6a2 2 0 00-2-2h-2a2 2 0 00-2 2v1m-6 4h16M5 11v10a2 2 0 002 2h10a2 2 0 002-2V11"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-gray-800">{{ totalProdutos }}</div>
+          <div class="text-gray-500">Produtos cadastrados</div>
+        </div>
+      </div>
+      <!-- Card Pedidos -->
+      <div class="bg-white rounded-lg shadow p-6 flex items-center">
+        <div class="bg-green-100 rounded-full p-4 mr-4">
+          <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path d="M9 17v-2a4 4 0 014-4h4m0 0V7a4 4 0 00-4-4H7a4 4 0 00-4 4v10a4 4 0 004 4h4"></path>
+          </svg>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-gray-800">{{ totalPedidos }}</div>
+          <div class="text-gray-500">Pedidos realizados</div>
+        </div>
+      </div>
+    </div>
+    <!-- Tabelas Resumidas -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Tabela Produtos -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Últimos Produtos</h2>
+        <table class="min-w-full">
+          <thead>
+            <tr>
+              <th class="px-4 py-2 text-left text-gray-600">Nome</th>
+              <th class="px-4 py-2 text-left text-gray-600">Preço</th>
+              <th class="px-4 py-2 text-left text-gray-600">Descrição</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let produto of ultimosProdutos">
+              <td class="px-4 py-2 text-gray-700">{{ produto.nome }}</td>
+              <td class="px-4 py-2 text-gray-700">{{ produto.preco | currency:'BRL' }}</td>
+              <td class="px-4 py-2 text-gray-700">{{ produto.descricao }}</td>
+            </tr>
+            <tr *ngIf="ultimosProdutos.length === 0">
+              <td colspan="3" class="px-4 py-2 text-gray-500 text-center">Nenhum produto cadastrado</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- Tabela Pedidos -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-xl font-semibold mb-4 text-gray-700">Últimos Pedidos</h2>
+        <table class="min-w-full">
+          <thead>
+            <tr>
+              <th class="px-4 py-2 text-left text-gray-600">ID</th>
+              <th class="px-4 py-2 text-left text-gray-600">Data</th>
+              <th class="px-4 py-2 text-left text-gray-600">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let pedido of ultimosPedidos">
+              <td class="px-4 py-2 text-gray-700">{{ pedido.id }}</td>
+              <td class="px-4 py-2 text-gray-700">{{ pedido.data | date:'dd/MM/yyyy' }}</td>
+              <td class="px-4 py-2 text-gray-700">{{ pedido.status }}</td>
+            </tr>
+            <tr *ngIf="ultimosPedidos.length === 0">
+              <td colspan="3" class="px-4 py-2 text-gray-500 text-center">Nenhum pedido realizado</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+</div>
