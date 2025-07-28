@@ -1,1 +1,4 @@
 export const ProdutoGateway = 'ProdutoGateway';
+export const PRODUCTS_SERVICE = 'PRODUCTS_SERVICE';
+export const PRODUTOS_IMPORTACAO_QUEUE = 'PRODUTOS_IMPORTACAO_QUEUE';
+export const STATUS_PRODUTOS_QUEUE = 'STATUS_PRODUTOS_QUEUE';

@@ -5,24 +5,45 @@ import { ProdutoTypeormRepository } from '../persistence/repositories/produto-ty
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProdutoEntity } from '../persistence/entities/produto.entity';
 import { BuscarProdutosUseCaseImpl } from '../../application/usecases/buscar-produtos.usecase.impl';
+import { ClientsModule, Transport } from '@nestjs/microservices';
+import {
+    PRODUCTS_SERVICE,
+    PRODUTOS_IMPORTACAO_QUEUE,
+} from '../constants/constants';
+import { ProdutoConsumerController } from '../controllers/produto-consumer.controller';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([ProdutoEntity])],
-    controllers: [ProdutoController],
+    imports: [
+        TypeOrmModule.forFeature([ProdutoEntity]),
+        ClientsModule.register([
+            {
+                name: PRODUCTS_SERVICE,
+                transport: Transport.RMQ,
+                options: {
+                    urls: ['amqp://localhost:5672'],
+                    queue: PRODUTOS_IMPORTACAO_QUEUE,
+                    queueOptions: {
+                        durable: true,
+                    },
+                },
+            },
+        ]),
+    ],
+    controllers: [ProdutoController, ProdutoConsumerController],
     providers: [
         {
             provide: 'CadastrarProdutoUseCase',
-            useClass: CadastrarProdutoUseCaseImpl
+            useClass: CadastrarProdutoUseCaseImpl,
         },
         {
             provide: 'BuscarProdutosUseCase',
-            useClass: BuscarProdutosUseCaseImpl
+            useClass: BuscarProdutosUseCaseImpl,
         },
         {
             provide: 'ProdutoGateway',
-            useClass: ProdutoTypeormRepository
-        }
+            useClass: ProdutoTypeormRepository,
+        },
     ],
-    exports: []
+    exports: [ClientsModule],
 })
 export class ProdutoModule {}

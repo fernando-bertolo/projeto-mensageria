@@ -15,7 +15,7 @@ import { ProdutoModule } from './features/produtos/infrastructure/modules/produt
             synchronize: true,
             migrations: [__dirname + '/migrations/*{.ts,.js}'],
         }),
-        ProdutoModule
+        ProdutoModule,
     ],
     controllers: [],
     providers: [],
