@@ -8,10 +8,12 @@ import {
     STATUS_PRODUTOS_QUEUE,
 } from '../constants/constants';
 import { Produto } from '../../core/entities/produto';
+import { Subject } from 'rxjs';
 
 @Controller('/api/v1/produtos-consumer')
 export class ProdutoConsumerController {
     private logger: Logger = new Logger(ProdutoConsumerController.name);
+    private readonly streamProducts = new Subject<ProdutoDTO>();
 
     constructor(
         @Inject('CadastrarProdutoUseCase')
@@ -38,7 +40,7 @@ export class ProdutoConsumerController {
 
     @MessagePattern(STATUS_PRODUTOS_QUEUE)
     processaStatus(@Payload() produto: ProdutoDTO) {
-        this.logger.debug('to na fila de status');
-        this.logger.log(produto);
+        this.streamProducts.next(produto);
+        this.logger.log(`Status do produto: ${produto.nome}`);
     }
 }

@@ -7,6 +7,7 @@ import {
     Inject,
     Post,
     Res,
+    Sse,
 } from '@nestjs/common';
 import { CadastrarProdutoUseCase } from '../../application/usecases/cadastrar-produto.usecase';
 import { ProdutoDTO } from './dtos/produto.dto';
@@ -19,10 +20,12 @@ import {
     PRODUCTS_SERVICE,
     PRODUTOS_IMPORTACAO_QUEUE,
 } from '../constants/constants';
-import { lastValueFrom } from 'rxjs';
+import { lastValueFrom, Observable, Subject } from 'rxjs';
 
 @Controller('/api/v1/produtos')
 export class ProdutoController {
+    private readonly streamNotifications = new Subject<ProdutoDTO>();
+
     constructor(
         @Inject('CadastrarProdutoUseCase')
         private readonly cadastrarProdutoUseCase: CadastrarProdutoUseCase,
@@ -49,5 +52,10 @@ export class ProdutoController {
         return {
             message: 'Produtos enviados',
         };
+    }
+
+    @Sse('/status')
+    statusProdutos(): Observable<ProdutoDTO> {
+        return this.streamNotifications.asObservable();
     }
 }
