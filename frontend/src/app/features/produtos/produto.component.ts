@@ -1,51 +1,69 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
-import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
 import { HttpService } from './http.service';
+import { Produto } from './interfaces';
+import { ModalProdutoComponent } from './modalProduto/modal-produto.component';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, ReactiveFormsModule],
+  imports: [CommonModule, ModalProdutoComponent],
   templateUrl: './produto.component.html'
 })
 export class ProdutoComponent implements OnInit {
-  formulario!: FormGroup;
+  produtos: Produto[] = [];
   carregando = false;
+  modalAberto = false;
 
-  constructor(private fb: FormBuilder, private httpService: HttpService){}
+  constructor(private httpService: HttpService){}
 
   ngOnInit(): void {
-    this.formulario = this.fb.group({
-      nome: ['', [Validators.required, Validators.minLength(3)]],
-      preco: [null, [Validators.required, Validators.min(0.01)]],
-      descricao: ['', [Validators.required, Validators.maxLength(500)]]
-    })
+    this.carregarProdutos();
   }
 
-  sendProduto() {
-    if(!this.formulario.valid) {
-      console.log("Formulário inválido!");
-      this.formulario.markAllAsTouched();
-      return;
-    }
+  carregarProdutos(): void {
     this.carregando = true;
-
-    const dados = this.formulario.value;
-
-    this.httpService.cadastrarProduto(dados).subscribe({
-      next: (res) => {
-        console.log('Produto cadastrado com sucesso!', res);
-        this.formulario.reset();
+    this.httpService.listarProdutos().subscribe({
+      next: (produtos) => {
+        this.produtos = produtos;
       },
       error: (err) => {
-        console.error('Erro ao cadastrar produto: ', err);
-        this.carregando = false;
+        console.error('Erro ao carregar produtos:', err);
       },
       complete: () => {
         this.carregando = false;
       }
     });
+  }
+
+  editarProduto(produto: Produto): void {
+    console.log('Editar produto:', produto);
+  }
+
+  excluirProduto(produto: Produto): void {
+    if (confirm(`Tem certeza que deseja excluir o produto "${produto.nome}"?`)) {
+      this.httpService.excluirProduto(produto.id!).subscribe({
+        next: () => {
+          console.log('Produto excluído com sucesso!');
+          this.carregarProdutos();
+        },
+        error: (err) => {
+          console.error('Erro ao excluir produto:', err);
+        }
+      });
+    }
+  }
+
+  abrirModal(): void {
+    this.modalAberto = true;
+  }
+
+  fecharModal(): void {
+    this.modalAberto = false;
+  }
+
+  onProdutoAdicionado(): void {
+    this.carregarProdutos();
+    this.fecharModal();
   }
 }
