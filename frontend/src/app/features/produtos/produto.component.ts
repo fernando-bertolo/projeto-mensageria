@@ -2,20 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from "@angular/forms";
-import { HttpClient } from  "@angular/common/http";
+import { HttpService } from './http.service';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
   imports: [CommonModule, RouterModule, ReactiveFormsModule],
-  templateUrl: './dashboard.component.html',
-  styleUrl: './dashboard.component.css'
+  templateUrl: './produto.component.html'
 })
-export class DashboardComponent implements OnInit {
+export class ProdutoComponent implements OnInit {
   formulario!: FormGroup;
   carregando = false;
-  
-  constructor(private fb: FormBuilder, private http: HttpClient){}
+
+  constructor(private fb: FormBuilder, private httpService: HttpService){}
 
   ngOnInit(): void {
     this.formulario = this.fb.group({
@@ -25,7 +24,7 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  clicar() {
+  sendProduto() {
     if(!this.formulario.valid) {
       console.log("Formulário inválido!");
       this.formulario.markAllAsTouched();
@@ -34,8 +33,8 @@ export class DashboardComponent implements OnInit {
     this.carregando = true;
 
     const dados = this.formulario.value;
-  
-    this.http.post('http://localhost:3000/api/v1/produtos', dados).subscribe({
+
+    this.httpService.cadastrarProduto(dados).subscribe({
       next: (res) => {
         console.log('Produto cadastrado com sucesso!', res);
         this.formulario.reset();
